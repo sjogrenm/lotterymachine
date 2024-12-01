@@ -3,7 +3,7 @@
     var containerR;
     var startDrawInterval = 0;
     var waitInterval;
-    var machineImage = "images/ballMachineBackground.jpg";
+    var machineImage = "Images/ballMachineBackground.jpg";
     var backgroundAudio = "backgroundAudio.wav";
     var balls;
     var draw = function() {};
@@ -52,40 +52,40 @@
 
             var img1 = new Image();
             img1.onload = onloadCallback;
-            img1.src = sFileLocation + "images/1.png";
+            img1.src = sFileLocation + "Images/1.png";
             var img2 = new Image();
             img2.onload = onloadCallback;
-            img2.src = sFileLocation + "images/2.png";
+            img2.src = sFileLocation + "Images/2.png";
             var img3 = new Image();
             img3.onload = onloadCallback;
-            img3.src = sFileLocation + "images/3.png";
+            img3.src = sFileLocation + "Images/3.png";
             var img4 = new Image();
             img4.onload = onloadCallback;
-            img4.src = sFileLocation + "images/4.png";
+            img4.src = sFileLocation + "Images/4.png";
             var img5 = new Image();
             img5.onload = onloadCallback;
-            img5.src = sFileLocation + "images/5.png";
+            img5.src = sFileLocation + "Images/5.png";
             var img6 = new Image();
             img6.onload = onloadCallback;
-            img6.src = sFileLocation + "images/6.png";
+            img6.src = sFileLocation + "Images/6.png";
             var img7 = new Image();
             img7.onload = onloadCallback;
-            img7.src = sFileLocation + "images/7.png";
+            img7.src = sFileLocation + "Images/7.png";
             var img8 = new Image();
             img8.onload = onloadCallback;
-            img8.src = sFileLocation + "images/8.png";
+            img8.src = sFileLocation + "Images/8.png";
             var img9 = new Image();
             img9.onload = onloadCallback;
-            img9.src = sFileLocation + "images/9.png";
+            img9.src = sFileLocation + "Images/9.png";
             var img0 = new Image();
             img0.onload = onloadCallback;
-            img0.src = sFileLocation + "images/0.png";
+            img0.src = sFileLocation + "Images/0.png";
 
             var images = [img0, img1, img2, img3, img4, img5, img6, img7, img8, img9];
 
             var tube = new Image();
             tube.onload = onloadCallback;
-            tube.src = sFileLocation + "images/tube.png";
+            tube.src = sFileLocation + "Images/tube.png";
 
             //======================== Setup js settings =========================
 
