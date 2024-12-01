@@ -13,6 +13,7 @@
     var resetPicked = false;
 	var jsFileLocation;
 	var sFileLocation;
+    var pickCounter;
 
     function sleep(milliseconds) {
         var start = new Date().getTime();
@@ -80,6 +81,8 @@
             img0.onload = onloadCallback;
             img0.src = sFileLocation + "images/0.png";
 
+            var images = [img0, img1, img2, img3, img4, img5, img6, img7, img8, img9];
+
             var tube = new Image();
             tube.onload = onloadCallback;
             tube.src = sFileLocation + "images/tube.png";
@@ -91,6 +94,7 @@
             waitInterval = settings.waitInterval || 1000; //ms
             playSound = settings.playSound;
 
+            pickCounter = 0;
 
             //======================== Modify div element =========================
             $(this).append('<canvas id="myCanvas" style="background-image:url(\'' + sFileLocation + machineImage + '\'); background-position: center; background-size: contain;"></canvas>');
@@ -104,6 +108,7 @@
 
                 var ball = {
                     number: number,
+                    image: images[number % 10],
                     x: xVal,
                     lastX: xVal,
                     y: yVal,
@@ -125,6 +130,18 @@
 			
 			var lock = false;
 
+            var dx = -3.5
+            var dy = 5
+            var radius = containerR / 5;
+            var ballNumbers = settings.balls || [0,1,2,3,4,5,6,7,8,9];
+            balls = ballNumbers.map(function(num) {
+                var r = Math.random() * (3 * containerR / 4);
+                var a = Math.random() * Math.PI * 2;
+                var x = containerR + r * Math.cos(a);
+                var y = containerR + r * Math.sin(a);
+                return getBall(num, x, y, dx, dy, containerR / 5);
+            });
+
             // Big circle container
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
@@ -136,24 +153,8 @@
             // Rectangle area for balls picked
             var canvas2 = document.getElementById("myCanvas2");
             var ctx2 = canvas2.getContext("2d");
-            canvas2.width = (containerR / 5 * 2 + 10) * 4;
+            canvas2.width = (containerR / 5 * 2 + 10) * balls.length;
             canvas2.height = containerR / 5 * 2 + 5;
-
-            var x = -3.5
-            var y = 5
-            var radius = containerR / 5;
-            balls = [
-                getBall(0, canvas.width / 2, canvas.height - 30, x, y, containerR / 5),
-                getBall(1, canvas.width / 3, canvas.height - 50, x, y, containerR / 5),
-                getBall(2, canvas.width / 4, canvas.height - 60, x, y, containerR / 5),
-                getBall(3, canvas.width / 2, canvas.height / 5, x, y, containerR / 5),
-                getBall(4, canvas.width / 3, canvas.height - 55, x, y, containerR / 5),
-                getBall(5, canvas.width / 2, canvas.height - 47, x, y, containerR / 5),
-                getBall(6, canvas.width / 2, canvas.height / 10, x, y, containerR / 5),
-                getBall(7, canvas.width / 2, canvas.height - 40, x, y, containerR / 5),
-                getBall(8, canvas.width / 2, canvas.height - 45, x, y, containerR / 5),
-                getBall(9, canvas.width / 2, canvas.height - 35, x, y, containerR / 5)
-            ];
 
             var angle1 = 0;
             var angle2 = 180;
@@ -191,51 +192,14 @@
                         ctx.fillStyle = "rgba(255, 255, 255, 1)";
                         ctx.fill();
                         ctx.globalCompositeOperation = 'source-atop';
-
-                        var img;
-
-                        switch (curBall.number) {
-                            case 1:
-                                img = img1
-                                break;
-                            case 2:
-                                img = img2
-                                break;
-                            case 3:
-                                img = img3
-                                break;
-                            case 4:
-                                img = img4
-                                break;
-                            case 5:
-                                img = img5
-                                break;
-                            case 6:
-                                img = img6
-                                break;
-                            case 7:
-                                img = img7
-                                break;
-                            case 8:
-                                img = img8
-                                break;
-                            case 9:
-                                img = img9
-                                break;
-                            case 0:
-                                img = img0
-                                break;
-                            default:
-                                img = img1
-                        }
-
+                        
                         var imageOffset = containerR / 20; //If there is white border on ball images
                         var sx = curBall.x - curBall.r - imageOffset; //The x coordinate where to start clipping
                         var sy = curBall.y - curBall.r - imageOffset; //The y coordinate where to start clipping
                         var swidth = (curBall.r * 2) + (imageOffset * 2); //The width of the clipped image
                         var sheight = (curBall.r * 2) + (imageOffset * 2) //The height of the clipped image
 
-                        ctx.drawImage(img, sx, sy, swidth, sheight);
+                        ctx.drawImage(curBall.image, sx, sy, swidth, sheight);
                         ctx.globalCompositeOperation = 'source-over';
 
                         // setup the font styles
@@ -281,67 +245,30 @@
                                 }
 
                                 if (curBall.x == targetX && curBall.y == targetY) {
-                                    var number = curBall.number;
+                                    var drawnBall = curBall;
 									
 									if (!lock) {
 										lock = true;
 									
 										setTimeout(function() {
 											
-											var x = 5 + balls[number].r + (balls[number].picked - 1) * (balls[number].r * 2 + 10);
+											var x = 5 + drawnBall.r + (drawnBall.picked - 1) * (drawnBall.r * 2 + 10);
 											var y = canvas2.height / 2;
 
 											ctx2.beginPath();
-											ctx2.arc(x, y, balls[number].r, 0, Math.PI * 2);
+											ctx2.arc(x, y, drawnBall.r, 0, Math.PI * 2);
 											ctx2.closePath();
 											ctx2.fillStyle = "rgba(255, 255, 255, 1)";
 											ctx2.fill();
 											ctx2.globalCompositeOperation = 'source-atop';
 
-											var img;
-
-											switch (balls[number].number) {
-												case 1:
-													img = img1
-													break;
-												case 2:
-													img = img2
-													break;
-												case 3:
-													img = img3
-													break;
-												case 4:
-													img = img4
-													break;
-												case 5:
-													img = img5
-													break;
-												case 6:
-													img = img6
-													break;
-												case 7:
-													img = img7
-													break;
-												case 8:
-													img = img8
-													break;
-												case 9:
-													img = img9
-													break;
-												case 0:
-													img = img0
-													break;
-												default:
-													img = img1
-											}
-
 											var imageOffset = containerR / 20; //If there is white border on ball images
-											var sx = x - balls[number].r - imageOffset; //The x coordinate where to start clipping
-											var sy = y - balls[number].r - imageOffset; //The y coordinate where to start clipping
-											var swidth = (balls[number].r * 2) + (imageOffset * 2); //The width of the clipped image
-											var sheight = (balls[number].r * 2) + (imageOffset * 2) //The height of the clipped image
+											var sx = x - drawnBall.r - imageOffset; //The x coordinate where to start clipping
+											var sy = y - drawnBall.r - imageOffset; //The y coordinate where to start clipping
+											var swidth = (drawnBall.r * 2) + (imageOffset * 2); //The width of the clipped image
+											var sheight = (drawnBall.r * 2) + (imageOffset * 2) //The height of the clipped image
 
-											ctx2.drawImage(img, sx, sy, swidth, sheight);
+											ctx2.drawImage(drawnBall.image, sx, sy, swidth, sheight);
 											ctx2.globalCompositeOperation = 'source-over';
 
 
@@ -350,14 +277,16 @@
 											ctx2.textAlign = "center";
 											ctx2.textBaseline = "middle";
 											ctx2.fillStyle = "black";
-											ctx2.fillText(balls[number].number, x, y);
+											ctx2.fillText(drawnBall.number, x, y);
 
-											balls[number].drawn = true;
-											balls[number].picked = 0;
-											balls[number].x = canvas.width / 2;
-											balls[number].y = canvas.height - 47;
-											balls[number].dx = -3.5;
-											balls[number].dy = 5;
+											drawnBall.drawn = true;
+											drawnBall.picked = 0;
+											drawnBall.x = canvas.width / 2;
+											drawnBall.y = canvas.height - 47;
+											drawnBall.dx = -3.5;
+											drawnBall.dy = 5;
+
+                                            balls.splice(balls.indexOf(drawnBall), 1);
 											
 											lock = false;
 										}, waitInterval);
@@ -414,6 +343,17 @@
                 ctx.stroke();
                 ctx.closePath();
             }
+        },
+        randomize: function() {
+            pause = false;
+            pickedBall = balls[Math.floor(Math.random() * balls.length)];
+            pickCounter += 1;
+            setTimeout(function() {
+                pickedBall.picked = pickCounter;
+                setTimeout(function() {
+                    pause = true;
+                }, waitInterval);
+            }, waitInterval);
         },
         run: function(numbers) {
 
